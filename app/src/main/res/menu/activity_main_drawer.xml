@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view"
+    >
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/home"
+            android:background="@drawable/cerclebackgroundpurple"
+            android:title="Home"/>
+
+        <item
+            android:id="@+id/nav_commercial"
+            android:icon="@drawable/commercial"
+            android:title="Commercial "/>
+        <item
+            android:id="@+id/nav_my_property"
+            android:icon="@drawable/myproperty"
+            android:title="My Property"/>
+        <item
+            android:id="@+id/nav_property_add"
+            android:icon="@drawable/addproperty"
+            android:title="Add Property"/>
+
+    </group>
+
+    <item android:title="MORE">
+        <menu>
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_info_outline_black_24dp"
+                android:title="About"/>
+            <item
+                android:id="@+id/nav_faq"
+                android:icon="@drawable/ic_live_help_black_24dp"
+                android:title="Help"/>
+
+            <item
+                android:id="@+id/nav_terms"
+                android:icon="@drawable/ic_perm_device_information_black_24dp"
+                android:title="Terms and Conditions"/>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+
+            <item
+                android:id="@+id/nav_rate"
+                android:icon="@drawable/ic_star_black_24dp"
+                android:title="Rate"/>
+
+
+
+
+
+
+        </menu>
+    </item>
+
+</menu>

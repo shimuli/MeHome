@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "729114366842",
+    "firebase_url": "https://mehome-b3c2b.firebaseio.com",
+    "project_id": "mehome-b3c2b",
+    "storage_bucket": "mehome-b3c2b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:729114366842:android:752c38c38d2c78a9",
+        "android_client_info": {
+          "package_name": "com.example.mehome"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "729114366842-7apfv6bq1remapfnkp2bsd9v2vle2ouk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAqGdTeLmt-CoYchNq7fBoBydfqzZ0430"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "729114366842-7apfv6bq1remapfnkp2bsd9v2vle2ouk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
