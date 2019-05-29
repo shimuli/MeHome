@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
-import com.example.mehome.Models.AddingProperty.CommercialSale.CommercialData;
+
 import com.example.mehome.Models.AddingProperty.HolidayHouses.HolidayData;
 import com.example.mehome.R;
 import com.squareup.picasso.Picasso;
