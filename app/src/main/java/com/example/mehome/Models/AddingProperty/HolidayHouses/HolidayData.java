@@ -1,8 +1,26 @@
 package com.example.mehome.Models.AddingProperty.HolidayHouses;
 
+import com.google.firebase.database.Exclude;
+
 public class HolidayData {
 
-    public String Title_of_Holiday_House, Holdiay_House_Location, Holiday_HouseDesc, Holdiay_HousePrice;
+    private String Title_of_Holiday_House, Holdiay_House_Location, Holiday_HouseDesc, Holdiay_HousePrice;
+    private String hKey;
+
+
+    @Exclude
+    public String getKey() {
+        return hKey;
+    }
+
+    @Exclude
+    public void setKey(String mKey) {
+        this.hKey = mKey;
+    }
+
+    public HolidayData(String mKey) {
+        this.hKey = mKey;
+    }
 
     public HolidayData() {
     }
@@ -73,6 +91,6 @@ public class HolidayData {
         this.imageURL = imageURL;
     }
 
-    public String Holiday_HouseType, Holiday_Bedroom_No;
-    public String imageURL;
+    private String Holiday_HouseType, Holiday_Bedroom_No;
+    private String imageURL;
 }

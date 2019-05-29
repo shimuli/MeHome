@@ -9,7 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ProgressBar;
 
-import com.example.mehome.Models.AddingProperty.CommercialSale.CommercialData;
+import com.example.mehome.Models.AddingProperty.HolidayHouses.HolidayData;
 import com.example.mehome.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -30,60 +30,60 @@ import com.google.firebase.storage.StorageReference;
 
 import com.example.mehome.R;
 
-public class HolidayDisplay extends AppCompatActivity  implements CommercialViewHolder.OnItemClickListener {
+public class HolidayDisplay extends AppCompatActivity  implements HolidayAdapter.OnItemClickListener {
     private RecyclerView mRecyclerView;
-    private CommercialViewHolder commercialViewHolder;
+    private HolidayAdapter holidayAdapter;
 
     private ProgressBar mProgressCircle;
 
     private DatabaseReference mDatabaseRef;
     private StorageReference mStorage;
-    private List<CommercialData> mUploads;
+    private List<HolidayData> mUploads;
     private ValueEventListener mDBListener;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_commercial_display);
+        setContentView(R.layout.activity_holiday_display);
 
-        mRecyclerView = findViewById(R.id.recycler_view);
+        mRecyclerView = findViewById(R.id.recycler_viewholiday);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mProgressCircle = findViewById(R.id.progress_circle);
+        mProgressCircle = findViewById(R.id.progress_circleholiday);
 
         mUploads = new ArrayList<>();
 
-        commercialViewHolder = new CommercialViewHolder(CommercialDisplay.this, mUploads);
+        holidayAdapter = new HolidayAdapter(HolidayDisplay.this, mUploads);
 
-        mRecyclerView.setAdapter(commercialViewHolder);
+        mRecyclerView.setAdapter(holidayAdapter);
 
-        commercialViewHolder.setOnItemClickListener(CommercialDisplay.this);
+        holidayAdapter.setOnItemClickListener(HolidayDisplay.this);
 
 
-        //mStorage = FirebaseStorage.getInstance().getReference();
+        mStorage = FirebaseStorage.getInstance().getReference();
         //StorageReference pathReference = mStorage.child("Commercial/");
 
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("Commercial/");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("Holiday_houses/ ");
 
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    CommercialData upload = postSnapshot.getValue(CommercialData.class);
+                    HolidayData upload = postSnapshot.getValue(HolidayData.class);
                     mUploads.add(upload);
                 }
 
-                commercialViewHolder = new CommercialViewHolder(CommercialDisplay.this, mUploads);
+                holidayAdapter = new HolidayAdapter(HolidayDisplay.this, mUploads);
 
-                mRecyclerView.setAdapter(commercialViewHolder);
+                mRecyclerView.setAdapter(holidayAdapter);
                 mProgressCircle.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(CommercialDisplay.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(HolidayDisplay.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 mProgressCircle.setVisibility(View.INVISIBLE);
             }
         });
@@ -100,7 +100,7 @@ public class HolidayDisplay extends AppCompatActivity  implements CommercialView
 
     @Override
     public void onDeleteClick(int position) {
-        CommercialData selectedItem = mUploads.get(position);
+        HolidayData selectedItem = mUploads.get(position);
         final String selectedKey = selectedItem.getKey();
 
         StorageReference imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(selectedItem.getImageURL());
@@ -108,7 +108,7 @@ public class HolidayDisplay extends AppCompatActivity  implements CommercialView
             @Override
             public void onSuccess(Void aVoid) {
                 mDatabaseRef.child(selectedKey).removeValue();
-                Toast.makeText(CommercialDisplay.this, "Item deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(HolidayDisplay.this, "Item deleted", Toast.LENGTH_SHORT).show();
             }
         });
     }
