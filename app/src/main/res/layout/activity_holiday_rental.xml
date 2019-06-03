@@ -80,32 +80,16 @@
                 android:text="Number of Bedrooms"
                 android:gravity="left"/>
 
-            <Spinner
+            <EditText
                 android:id="@+id/bedroomSpinnerHoliday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:padding="16dp"
-                android:layout_marginTop="2dp"
-                style="@style/Widget.AppCompat.Spinner.Underlined"
-                android:spinnerMode="dropdown"/>
+                android:maxLines="1"
+                android:hint="Number of Bedrooms"/>
 
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/houseType"
-                android:padding="16dp"
-                android:layout_marginTop="10dp"
-                android:text="House Type"
-                android:gravity="left"/>
 
-            <Spinner
-                android:id="@+id/HouseTypeSpinnerHoliday"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:layout_marginTop="2dp"
-                style="@style/Widget.AppCompat.Spinner.Underlined"
-                android:spinnerMode="dropdown"/>
 
 
             <EditText

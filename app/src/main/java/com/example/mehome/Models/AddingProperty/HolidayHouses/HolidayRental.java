@@ -1,12 +1,16 @@
 package com.example.mehome.Models.AddingProperty.HolidayHouses;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,7 +22,9 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.mehome.Models.AddingProperty.AddProperty;
 import com.example.mehome.R;
+import com.example.mehome.UploadImage;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -27,84 +33,55 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
 public class HolidayRental extends AppCompatActivity {
 
-    private String Storage_Path = "Holiday_houses/ ";
+    private Button selectImage,Uploaddata;
+    private ImageView HolidayImage;
+    private String Storage_Path = "holiday/";
+    private String Database_path = "holiday/";
 
-    private String Database_Path = "Holiday_houses/ ";
-
-    private Button SelectImage, UploadData;
-    EditText Title_of_House, House_Location, HouseDesc, HousePrice;
+    private EditText hName, hPrice, hDesc, hLocation, hbedroom;
+    private static final int PICK_IMAGE_REQUEST=1;
+    private DatabaseReference hdataref;
+    private StorageReference hstorageref;
     Spinner HouseType, Bedroom_No;
-    private ImageView SelectedImage;
-
-    private Uri FilePathUri;
-
-    // Creating StorageReference and DatabaseReference object.
-    StorageReference storageReference;
-
-    DatabaseReference databaseReference;
-
-    int Image_Request_code = 8;
-
-    private ProgressDialog progressDialog;
-
+    final int IMAGE_REQUEST_CODE = 999;
+    private ProgressDialog hprogressDialog;
+    private Uri himguri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_holiday_rental);
 
 
-        //get the spinner from the xml.
-        Spinner bedRm = findViewById(R.id.bedroomSpinnerHoliday);
-//create a list of items for the spinner.
-        String[] rooms = new String[]{"None", "1", "2", "3", "4", "5", "6","7"};
-//create an adapter to describe how the items are displayed, adapters are used in several places in android.
-//There are multiple variations of this, but this is the basic variant.
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, rooms);
-//set the spinners adapter to the previously created one.
-        bedRm.setAdapter(adapter);
+        setContentView(R.layout.activity_holiday_rental);
+        selectImage=(Button)findViewById(R.id.ButtonChooseImageHoliday);
 
-        //get the spinner from the xml.
-        Spinner houseTyp = findViewById(R.id.HouseTypeSpinnerHoliday);
-//create a list of items for the spinner.
-        String[] availabletypes = new String[]{"Family", "Bachelor", "Both"};
-//create an adapter to describe how the items are displayed, adapters are used in several places in android.
-//There are multiple variations of this, but this is the basic variant.
-        ArrayAdapter<String> adapters = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, availabletypes);
-//set the spinners adapter to the previously created one.
-        houseTyp.setAdapter(adapters);
+        HolidayImage=(ImageView)findViewById(R.id.ShowImageViewHoliday);
+        Uploaddata=(Button)findViewById(R.id.ButtonUploadImageHoliday);
+        hName=(EditText)findViewById(R.id.houseTitleHoliday);
+        hDesc =findViewById(R.id.DescriptionHoliday);
+        hLocation =findViewById(R.id.locationHoliday);
+        hPrice = findViewById(R.id.housePriceHoliday);
+        hbedroom =findViewById(R.id.bedroomSpinnerHoliday);
 
 
-        // Assign FirebaseStorage instance to storageReference.
-        storageReference = FirebaseStorage.getInstance().getReference();
+        hprogressDialog=new ProgressDialog(HolidayRental.this);
 
-        // Assign FirebaseDatabase instance with root database name.
-        databaseReference = FirebaseDatabase.getInstance().getReference(Database_Path);
+        hstorageref= FirebaseStorage.getInstance().getReference(Storage_Path);
+        hdataref= FirebaseDatabase.getInstance().getReference(Database_path);
+        Uploaddata.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadImage();
+            }
+        });
 
-
-        SelectImage =findViewById(R.id.ButtonChooseImageHoliday);
-        UploadData = findViewById(R.id.ButtonUploadImageHoliday);
-
-        Title_of_House =  findViewById(R.id.houseTitleHoliday);
-        House_Location = findViewById(R.id.locationHoliday);
-        HouseDesc = findViewById(R.id.DescriptionHoliday);
-        HousePrice =findViewById(R.id.housePriceHoliday);
-
-        HouseType = findViewById(R.id.HouseTypeSpinnerHoliday);
-        Bedroom_No = findViewById(R.id.bedroomSpinnerHoliday);
-
-
-        SelectedImage = findViewById(R.id.ShowImageViewHoliday);
-
-        progressDialog =new ProgressDialog(HolidayRental.this);
-
-
-
-        SelectImage.setOnClickListener(new View.OnClickListener() {
+        selectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent selectImageIntent = new Intent();
@@ -113,141 +90,86 @@ public class HolidayRental extends AppCompatActivity {
                 selectImageIntent.setType("image/*");
                 selectImageIntent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(selectImageIntent, "Please Select" +
-                        "Image"),Image_Request_code);
+                        "Image"),IMAGE_REQUEST_CODE);
 
-            }
-        });
 
-        SelectedImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent selectImageIntent = new Intent();
-
-                // Setting intent type as image to select image from phone storage.
-                selectImageIntent.setType("image/*");
-                selectImageIntent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(selectImageIntent, "Please Select" +
-                        "Image"),Image_Request_code);
-
-            }
-        });
-
-        UploadData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // Calling method to upload selected data on Firebase storage.
-                UploadImageFileToFirebaseStorage();
+                ActivityCompat.requestPermissions(HolidayRental.this,new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},IMAGE_REQUEST_CODE);
             }
         });
 
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode==IMAGE_REQUEST_CODE){
+            if (grantResults.length>0 && grantResults[0]== PackageManager.PERMISSION_GRANTED){
+                Intent intent=new Intent(new Intent(Intent.ACTION_PICK));
+                intent.setType("image/*");
 
-        super.onActivityResult(requestCode,resultCode, data );
+                startActivityForResult(Intent.createChooser(intent,"select image"),IMAGE_REQUEST_CODE);
 
-        if (requestCode == Image_Request_code && resultCode==RESULT_OK && data != null && data.getData()!=null){
-            FilePathUri = data.getData();
-
-            try{
-
-                // Getting selected image into Bitmap.
-
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), FilePathUri);
-
-                // Setting up bitmap selected image into ImageView.
-                SelectedImage.setImageBitmap(bitmap);
-
-                // After selecting image change choose button above text.
-
-                SelectImage.setText("Image Selected");
-
-            }
-            catch (IOException e){
-                e.printStackTrace();
             }
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == IMAGE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            himguri = data.getData();
+            Picasso.with(this).load(himguri).into(HolidayImage);
+        }
+    }
+    private String getFileExtensoin (Uri uri){
+        ContentResolver contentResolver = getContentResolver();
+        MimeTypeMap map = MimeTypeMap.getSingleton();
+        return map.getExtensionFromMimeType(contentResolver.getType(uri));
 
     }
 
-    // Creating Method to get the selected image file Extension from File Path URI.
-    public String GetFileExtension(Uri uri){
-        ContentResolver contentResolver =getContentResolver();
-        MimeTypeMap mimeTypeMap =MimeTypeMap.getSingleton();
-
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
-
-    // Creating UploadImageFileToFirebaseStorage method to upload image on storage.
-    public void UploadImageFileToFirebaseStorage(){
-        if (FilePathUri!=null){
-
-            progressDialog.setTitle("Uploading Data...");
-
-            progressDialog.show();
-
-            //second StorageReference.
-
-            StorageReference storageReference1 = storageReference.child(Storage_Path+System.currentTimeMillis()+"."+GetFileExtension(FilePathUri));
-
-            storageReference1.putFile(FilePathUri)
+    private void uploadImage() {
+        if (himguri!=null){
+            StorageReference storageReference=hstorageref.child(System.currentTimeMillis()+"."+ getFileExtensoin(himguri));
+            storageReference.putFile(himguri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            String houseImageName =  Title_of_House.getText().toString().trim();
-                            String HouseArea = House_Location.getText().toString().trim();
-                            String HouseCost= HousePrice.getText().toString().trim();
-                            String HouseDescp = HouseDesc.getText().toString().trim();
-                            String HouseTypes= HouseType.getSelectedItem().toString().trim();
-                            String BedRooms = Bedroom_No.getSelectedItem().toString().trim();
+                            Handler handler=new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    hprogressDialog.setProgress(0);
+                                }
+                            },5000);
+                            Toast.makeText(HolidayRental.this,"Upload SuccessFul",Toast.LENGTH_SHORT).show();
+                            HolidayData list_data=new HolidayData(hName.getText().toString().trim(),hPrice.getText().toString().trim(),hLocation.getText().toString().trim(),hbedroom.getText().toString().trim(),
+                                    hDesc.getText().toString().trim(),taskSnapshot.getDownloadUrl().toString());
 
-                            progressDialog.dismiss();
-
-                            Toast.makeText(getApplicationContext(), "Data Uploaded Successfully", Toast.LENGTH_SHORT).show();
-
-                            @SuppressWarnings("VisibleForTest")
-                            HolidayData dataUploadInfo =new HolidayData(houseImageName,HouseArea, HouseDescp, HouseTypes,HouseCost, BedRooms,taskSnapshot.getStorage().getDownloadUrl().toString());// getResult().getStorage().getDownloadUrl());
-
-
-                            // Getting image upload ID.
-                            String ImageUploadId = databaseReference.push().getKey();
-
-                            //adding an upload to firebase database
-                            // String uploadId = mDatabase.push().getKey();
-                            // mDatabase.child(uploadId).setValue(upload);
-
-                            // Adding image upload id s child element into databaseReference.
-                            databaseReference.child(ImageUploadId).setValue(dataUploadInfo);
-
-
+                            //(String title_of_Holiday_House,String holdiay_HousePrice,String holdiay_House_Location,
+                            //  String holiday_Bedroom_No,String holiday_HouseDesc, String imageURL, String hKey)
+                            String uploadid=hdataref.push().getKey();
+                            hdataref.child(uploadid).setValue(list_data);
+                            startActivity(new Intent(HolidayRental.this, AddProperty.class));
+                            finish();
                         }
-                    })
-                    // If something goes wrong .
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
 
-                            Toast.makeText(HolidayRental.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-
-
-                        }
-                    })
-
-                    // On progress change upload time.
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            progressDialog.setTitle("Data is Uploading...");
-                        }
-                    });
-
-
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    double pr=(100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                    hprogressDialog.setProgress((int) pr);
+                }
+            });
         }else {
-            Toast.makeText(HolidayRental.this, "Please Select Image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(HolidayRental.this,"File Not Selected",Toast.LENGTH_SHORT).show();
         }
+
     }
 }
 

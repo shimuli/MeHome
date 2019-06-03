@@ -42,7 +42,6 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ImageVie
         holder.textViewLocation.setText(uploadCurrent.getHoldiay_House_Location());
         holder.textViewDesc.setText(uploadCurrent.getHoliday_HouseDesc());
         holder.textViewPrice.setText(uploadCurrent.getHoldiay_HousePrice());
-        holder.textViewType.setText(uploadCurrent.getHoliday_HouseType());
         holder.textViewBed.setText(uploadCurrent.getHoliday_Bedroom_No());
         Picasso.with(mContext)
                 .load(uploadCurrent.getImageURL())
