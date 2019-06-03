@@ -65,7 +65,7 @@ public class HolidayDisplay extends AppCompatActivity  implements HolidayAdapter
         mStorage = FirebaseStorage.getInstance().getReference();
         //StorageReference pathReference = mStorage.child("Commercial/");
 
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("holiday/ ");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("holiday/");
 
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override

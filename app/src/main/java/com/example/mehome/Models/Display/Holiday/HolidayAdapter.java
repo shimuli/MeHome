@@ -67,7 +67,6 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ImageVie
             textViewDesc = itemView.findViewById(R.id.text_view_description_comm);
             textViewPrice = itemView.findViewById(R.id.text_view_Price_comm);
             imageView = itemView.findViewById(R.id.image_view_upload_comm);
-            textViewType = itemView.findViewById(R.id.text_view_Type_comm);
             textViewBed = itemView.findViewById(R.id.text_view_Bedrooms_comm);
 
 
