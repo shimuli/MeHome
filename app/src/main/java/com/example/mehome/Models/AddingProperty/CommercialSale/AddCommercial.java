@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.Toast;
@@ -59,7 +60,7 @@ public class AddCommercial extends AppCompatActivity {
 
     DatabaseReference databaseReference;
 
-    int Image_Request_code = 8;
+    int Image_Request_code = 1;
 
     private ProgressDialog progressDialog;
     @Override
@@ -181,6 +182,8 @@ public class AddCommercial extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            String uri = taskSnapshot.toString();
+                            Log.d("TAG", uri);
                             String CommImageName =  Title_of_Commercial.getText().toString().trim();
                             String CommArea = Commercial_Location.getText().toString().trim();
                             String CommCost= CommercialPrice.getText().toString().trim();

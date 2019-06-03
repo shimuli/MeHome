@@ -11,7 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Models.Display.Sale.SaleDisplay"></activity>
+        <activity android:name=".UploadImage"></activity>
+        <activity android:name=".Models.Display.Sale.SaleDisplay" />
         <activity android:name=".Models.Display.Rentals.HomeDisplay" />
         <activity android:name=".Models.Display.Holiday.HolidayDisplay" />
         <activity android:name=".Models.AddingProperty.HolidayHouses.HolidayRental" />

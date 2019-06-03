@@ -33,9 +33,9 @@ import java.io.IOException;
 
 public class SaleHouse extends AppCompatActivity {
 
-    private String Storage_Path = "Sale_houses/ ";
+    private String Storage_Path = "Sale_houses/";
 
-    private String Database_Path = "Sale_houses/ ";
+    private String Database_Path = "Sale_houses/";
 
     private Button SelectImage, UploadData;
     EditText Title_of_House, House_Location, HouseDesc, HousePrice;
