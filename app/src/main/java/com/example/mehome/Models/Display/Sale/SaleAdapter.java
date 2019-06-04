@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.mehome.Models.AddingProperty.HolidayHouses.HolidayData;
 import com.example.mehome.Models.AddingProperty.SaleHouses.SaleData;
 import com.example.mehome.R;
 import com.squareup.picasso.Picasso;
@@ -19,10 +20,10 @@ import java.util.List;
 
 public class SaleAdapter extends RecyclerView.Adapter<SaleAdapter.ImageViewHolder> {
     private Context mContext;
-    private List<SaleData> mUploads;
+    private List<HolidayData> mUploads;
     private OnItemClickListener mListener;
 
-    public SaleAdapter(Context context, List<SaleData> uploads) {
+    public SaleAdapter(Context context, List<HolidayData> uploads) {
         mContext = context;
         mUploads = uploads;
     }
@@ -36,13 +37,13 @@ public class SaleAdapter extends RecyclerView.Adapter<SaleAdapter.ImageViewHolde
 
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
-        SaleData uploadCurrent = mUploads.get(position);
-        holder.textViewTitle.setText(uploadCurrent.getTitle_of_HouseSale());
-        holder.textViewLocation.setText(uploadCurrent.getHouse_LocationSale());
-        holder.textViewDesc.setText(uploadCurrent.getHouseDescSale());
-        holder.textViewPrice.setText(uploadCurrent.getHousePriceSale());
-        holder.textViewType.setText(uploadCurrent.getHouseTypeSale());
-        holder.textViewBed.setText(uploadCurrent.getBedroom_NoSale());
+        HolidayData uploadCurrent = mUploads.get(position);
+        holder.textViewTitle.setText(uploadCurrent.getTitle_of_Holiday_House());
+        holder.textViewLocation.setText(uploadCurrent.getHoldiay_House_Location());
+        holder.textViewDesc.setText(uploadCurrent.getHoliday_HouseDesc());
+        holder.textViewPrice.setText(uploadCurrent.getHoldiay_HousePrice());
+        holder.textViewBed.setText(uploadCurrent.getHoliday_Bedroom_No());
+        holder.textViewPhone.setText(uploadCurrent.getOwnerNumber());
         Picasso.with(mContext)
                 .load(uploadCurrent.getImageURL())
                 .fit()
@@ -56,19 +57,19 @@ public class SaleAdapter extends RecyclerView.Adapter<SaleAdapter.ImageViewHolde
     }
 
     public class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
-        public TextView textViewTitle, textViewLocation, textViewDesc, textViewPrice, textViewType, textViewBed;
+        public TextView textViewTitle, textViewLocation, textViewDesc, textViewPrice, textViewBed, textViewPhone;
         public ImageView imageView;
 
         public ImageViewHolder(View itemView) {
             super(itemView);
 
-            textViewTitle = itemView.findViewById(R.id.text_view_name_sale);
-            textViewLocation = itemView.findViewById(R.id.text_view_location_sale);
-            textViewDesc = itemView.findViewById(R.id.text_view_description_sale);
-            textViewPrice = itemView.findViewById(R.id.text_view_Price_sale);
-            imageView = itemView.findViewById(R.id.image_view_upload_sale);
-            textViewType = itemView.findViewById(R.id.text_view_Type_sale);
-            textViewBed = itemView.findViewById(R.id.text_view_Bedrooms_sale);
+            textViewTitle = itemView.findViewById(R.id.text_view_name_comm);
+            textViewLocation = itemView.findViewById(R.id.text_view_location_comm);
+            textViewDesc = itemView.findViewById(R.id.text_view_description_comm);
+            textViewPrice = itemView.findViewById(R.id.text_view_Price_comm);
+            imageView = itemView.findViewById(R.id.image_view_upload_comm);
+            textViewBed = itemView.findViewById(R.id.text_view_Bedrooms_comm);
+            textViewPhone =itemView.findViewById(R.id.text_view_phone_comm);
 
 
             itemView.setOnClickListener(this);

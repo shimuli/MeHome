@@ -44,7 +44,7 @@ public class HolidayRental extends AppCompatActivity {
     private String Storage_Path = "holiday/";
     private String Database_path = "holiday/";
 
-    private EditText hName, hPrice, hDesc, hLocation, hbedroom;
+    private EditText hName, hPrice, hDesc, hLocation, hbedroom, hnumber;
     private static final int PICK_IMAGE_REQUEST=1;
     private DatabaseReference hdataref;
     private StorageReference hstorageref;
@@ -68,6 +68,7 @@ public class HolidayRental extends AppCompatActivity {
         hLocation =findViewById(R.id.locationHoliday);
         hPrice = findViewById(R.id.housePriceHoliday);
         hbedroom =findViewById(R.id.bedroomSpinnerHoliday);
+        hnumber =findViewById(R.id.numberHoliday);
 
 
         hprogressDialog=new ProgressDialog(HolidayRental.this);
@@ -144,8 +145,9 @@ public class HolidayRental extends AppCompatActivity {
                                 }
                             },5000);
                             Toast.makeText(HolidayRental.this,"Upload SuccessFul",Toast.LENGTH_SHORT).show();
-                            HolidayData list_data=new HolidayData(hName.getText().toString().trim(),hPrice.getText().toString().trim(),hLocation.getText().toString().trim(),hbedroom.getText().toString().trim(),
-                                    hDesc.getText().toString().trim(),taskSnapshot.getDownloadUrl().toString());
+                            HolidayData list_data=new HolidayData(hName.getText().toString().trim(),
+                                    hPrice.getText().toString().trim(),hLocation.getText().toString().trim(),hbedroom.getText().toString().trim(),
+                                    hDesc.getText().toString().trim(), hnumber.getText().toString().trim(),taskSnapshot.getDownloadUrl().toString());
 
                             //(String title_of_Holiday_House,String holdiay_HousePrice,String holdiay_House_Location,
                             //  String holiday_Bedroom_No,String holiday_HouseDesc, String imageURL, String hKey)

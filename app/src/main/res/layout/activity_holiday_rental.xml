@@ -127,6 +127,24 @@
                 android:maxLines="1"
                 android:hint="Price(Ksh)"/>
 
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="-10dp"
+                android:textSize="18sp"
+                android:textStyle="italic"
+                android:layout_marginTop="10dp"
+                android:text="Property Owner Phone Number"
+                android:gravity="left"/>
+
+            <EditText
+                android:id="@+id/numberHoliday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:maxLines="1"
+                android:hint="Phone Number"/>
+
 
 
             <Button

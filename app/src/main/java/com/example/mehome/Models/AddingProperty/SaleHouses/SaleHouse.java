@@ -1,12 +1,16 @@
 package com.example.mehome.Models.AddingProperty.SaleHouses;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.mehome.Models.AddingProperty.AddProperty;
+import com.example.mehome.Models.AddingProperty.HolidayHouses.HolidayData;
 import com.example.mehome.Models.AddingProperty.RentalHouses.HouseRental;
 import com.example.mehome.R;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -28,84 +34,54 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
 public class SaleHouse extends AppCompatActivity {
 
-    private String Storage_Path = "Sale_houses/";
+    private Button selectImage,Uploaddata;
+    private ImageView SaleImage;
+    private String Storage_Path = "Sale/";
+    private String Database_path = "Sale/";
 
-    private String Database_Path = "Sale_houses/";
-
-    private Button SelectImage, UploadData;
-    EditText Title_of_House, House_Location, HouseDesc, HousePrice;
-    Spinner HouseType, Bedroom_No;
-    private ImageView SelectedImage;
-
-    private Uri FilePathUri;
-
-    // Creating StorageReference and DatabaseReference object.
-    StorageReference storageReference;
-
-    DatabaseReference databaseReference;
-
-    int Image_Request_code = 8;
-
-    private ProgressDialog progressDialog;
-
+    private EditText sName, sPrice, sDesc, sLocation, sbedroom, snumber;
+    private static final int PICK_IMAGE_REQUEST=1;
+    private DatabaseReference sdataref;
+    private StorageReference sstorageref;
+    final int IMAGE_REQUEST_CODE = 999;
+    private ProgressDialog sprogressDialog;
+    private Uri simguri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sale_house);
 
 
-        //get the spinner from the xml.
-        Spinner bedRm = findViewById(R.id.bedroomSpinnersale);
-//create a list of items for the spinner.
-        String[] rooms = new String[]{"None", "1", "2", "3", "4", "5", "6","7"};
-//create an adapter to describe how the items are displayed, adapters are used in several places in android.
-//There are multiple variations of this, but this is the basic variant.
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, rooms);
-//set the spinners adapter to the previously created one.
-        bedRm.setAdapter(adapter);
+        selectImage=(Button)findViewById(R.id.ButtonChooseImageHoliday);
 
-        //get the spinner from the xml.
-        Spinner houseTyp = findViewById(R.id.HouseTypeSpinnersale);
-//create a list of items for the spinner.
-        String[] availabletypes = new String[]{"Family", "Bachelor", "Both"};
-//create an adapter to describe how the items are displayed, adapters are used in several places in android.
-//There are multiple variations of this, but this is the basic variant.
-        ArrayAdapter<String> adapters = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, availabletypes);
-//set the spinners adapter to the previously created one.
-        houseTyp.setAdapter(adapters);
+        SaleImage=(ImageView)findViewById(R.id.ShowImageViewHoliday);
+        Uploaddata=(Button)findViewById(R.id.ButtonUploadImageHoliday);
+        sName=(EditText)findViewById(R.id.houseTitleHoliday);
+        sDesc =findViewById(R.id.DescriptionHoliday);
+        sLocation =findViewById(R.id.locationHoliday);
+        sPrice = findViewById(R.id.housePriceHoliday);
+        sbedroom =findViewById(R.id.bedroomSpinnerHoliday);
+        snumber =findViewById(R.id.numberHoliday);
 
 
-        // Assign FirebaseStorage instance to storageReference.
-        storageReference = FirebaseStorage.getInstance().getReference();
+        sprogressDialog=new ProgressDialog(SaleHouse.this);
 
-        // Assign FirebaseDatabase instance with root database name.
-        databaseReference = FirebaseDatabase.getInstance().getReference(Database_Path);
+        sstorageref= FirebaseStorage.getInstance().getReference(Storage_Path);
+        sdataref= FirebaseDatabase.getInstance().getReference(Database_path);
+        Uploaddata.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadImage();
+            }
+        });
 
-
-        SelectImage =findViewById(R.id.ButtonChooseImagesale);
-        UploadData = findViewById(R.id.ButtonUploadImagesale);
-
-        Title_of_House =  findViewById(R.id.houseTitlesale);
-        House_Location = findViewById(R.id.locationsale);
-        HouseDesc = findViewById(R.id.Descriptionsale);
-        HousePrice =findViewById(R.id.housePricesale);
-
-        HouseType = findViewById(R.id.HouseTypeSpinnersale);
-        Bedroom_No = findViewById(R.id.bedroomSpinnersale);
-
-
-        SelectedImage = findViewById(R.id.ShowImagesale);
-
-        progressDialog =new ProgressDialog(SaleHouse.this);
-
-
-
-        SelectImage.setOnClickListener(new View.OnClickListener() {
+        selectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent selectImageIntent = new Intent();
@@ -114,140 +90,87 @@ public class SaleHouse extends AppCompatActivity {
                 selectImageIntent.setType("image/*");
                 selectImageIntent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(selectImageIntent, "Please Select" +
-                        "Image"),Image_Request_code);
+                        "Image"),IMAGE_REQUEST_CODE);
 
-            }
-        });
 
-        SelectedImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent selectImageIntent = new Intent();
-
-                // Setting intent type as image to select image from phone storage.
-                selectImageIntent.setType("image/*");
-                selectImageIntent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(selectImageIntent, "Please Select" +
-                        "Image"),Image_Request_code);
-
-            }
-        });
-
-        UploadData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // Calling method to upload selected data on Firebase storage.
-                UploadImageFileToFirebaseStorage();
+                ActivityCompat.requestPermissions(SaleHouse.this,
+                        new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},IMAGE_REQUEST_CODE);
             }
         });
 
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode==IMAGE_REQUEST_CODE){
+            if (grantResults.length>0 && grantResults[0]== PackageManager.PERMISSION_GRANTED){
+                Intent intent=new Intent(new Intent(Intent.ACTION_PICK));
+                intent.setType("image/*");
 
-        super.onActivityResult(requestCode,resultCode, data );
+                startActivityForResult(Intent.createChooser(intent,"select image"),IMAGE_REQUEST_CODE);
 
-        if (requestCode == Image_Request_code && resultCode==RESULT_OK && data != null && data.getData()!=null){
-            FilePathUri = data.getData();
-
-            try{
-
-                // Getting selected image into Bitmap.
-
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), FilePathUri);
-
-                // Setting up bitmap selected image into ImageView.
-                SelectedImage.setImageBitmap(bitmap);
-
-                // After selecting image change choose button above text.
-
-                SelectImage.setText("Image Selected");
-
-            }
-            catch (IOException e){
-                e.printStackTrace();
             }
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == IMAGE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            simguri = data.getData();
+            Picasso.with(this).load(simguri).into(SaleImage);
+        }
+    }
+    private String getFileExtensoin (Uri uri){
+        ContentResolver contentResolver = getContentResolver();
+        MimeTypeMap map = MimeTypeMap.getSingleton();
+        return map.getExtensionFromMimeType(contentResolver.getType(uri));
 
     }
 
-    // Creating Method to get the selected image file Extension from File Path URI.
-    public String GetFileExtension(Uri uri){
-        ContentResolver contentResolver =getContentResolver();
-        MimeTypeMap mimeTypeMap =MimeTypeMap.getSingleton();
-
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
-
-    // Creating UploadImageFileToFirebaseStorage method to upload image on storage.
-    public void UploadImageFileToFirebaseStorage(){
-        if (FilePathUri!=null){
-
-            progressDialog.setTitle("Uploading Data...");
-
-            progressDialog.show();
-
-            //second StorageReference.
-
-            StorageReference storageReference1 = storageReference.child(Storage_Path+System.currentTimeMillis()+"."+GetFileExtension(FilePathUri));
-
-            storageReference1.putFile(FilePathUri)
+    private void uploadImage() {
+        if (simguri!=null){
+            StorageReference storageReference=sstorageref.child(System.currentTimeMillis()+"."+ getFileExtensoin(simguri));
+            storageReference.putFile(simguri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            String houseImageName =  Title_of_House.getText().toString().trim();
-                            String HouseArea = House_Location.getText().toString().trim();
-                            String HouseCost= HousePrice.getText().toString().trim();
-                            String HouseDescp = HouseDesc.getText().toString().trim();
-                            String HouseTypes= HouseType.getSelectedItem().toString().trim();
-                            String BedRooms = Bedroom_No.getSelectedItem().toString().trim();
+                            Handler handler=new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    sprogressDialog.setProgress(0);
+                                }
+                            },5000);
+                            Toast.makeText(SaleHouse.this,"Upload SuccessFul",Toast.LENGTH_SHORT).show();
+                            HolidayData list_data=new HolidayData(sName.getText().toString().trim(),
+                                    sPrice.getText().toString().trim(),sLocation.getText().toString().trim(),sbedroom.getText().toString().trim(),
+                                    sDesc.getText().toString().trim(), snumber.getText().toString().trim(),taskSnapshot.getDownloadUrl().toString());
 
-                            progressDialog.dismiss();
-
-                            Toast.makeText(getApplicationContext(), "Data Uploaded Successfully", Toast.LENGTH_SHORT).show();
-
-                            @SuppressWarnings("VisibleForTest")
-                            SaleData dataUploadInfo =new SaleData(houseImageName,HouseArea, HouseCost, HouseDescp,HouseTypes, BedRooms,taskSnapshot.getStorage().getDownloadUrl().toString());// getResult().getStorage().getDownloadUrl());
-
-
-                            // Getting image upload ID.
-                            String ImageUploadId = databaseReference.push().getKey();
-
-                            //adding an upload to firebase database
-                            // String uploadId = mDatabase.push().getKey();
-                            // mDatabase.child(uploadId).setValue(upload);
-
-                            // Adding image upload id s child element into databaseReference.
-                            databaseReference.child(ImageUploadId).setValue(dataUploadInfo);
-
-
+                            //(String title_of_Holiday_House,String holdiay_HousePrice,String holdiay_House_Location,
+                            //  String holiday_Bedroom_No,String holiday_HouseDesc, String imageURL, String hKey)
+                            String uploadid=sdataref.push().getKey();
+                            sdataref.child(uploadid).setValue(list_data);
+                            startActivity(new Intent(SaleHouse.this, AddProperty.class));
+                            finish();
                         }
-                    })
-                    // If something goes wrong .
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
 
-                            Toast.makeText(SaleHouse.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-
-
-                        }
-                    })
-
-                    // On progress change upload time.
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            progressDialog.setTitle("Data is Uploading...");
-                        }
-                    });
-
-
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    double pr=(100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                    sprogressDialog.setProgress((int) pr);
+                }
+            });
         }else {
-            Toast.makeText(SaleHouse.this, "Please Select Image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(SaleHouse.this,"File Not Selected",Toast.LENGTH_SHORT).show();
         }
+
     }
 }

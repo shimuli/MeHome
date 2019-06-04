@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.example.mehome.Models.AddingProperty.HolidayHouses.HolidayData;
 import com.example.mehome.Models.AddingProperty.SaleHouses.SaleData;
+import com.example.mehome.Models.Display.Rentals.HomeAdapter;
 import com.example.mehome.R;
 
 import android.support.v7.app.AppCompatActivity;
@@ -46,7 +48,7 @@ public class SaleDisplay extends AppCompatActivity  implements SaleAdapter.OnIte
 
     private DatabaseReference mDatabaseRef;
     private StorageReference mStorage;
-    private List<SaleData> mUploads;
+    private List<HolidayData> mUploads;
     private ValueEventListener mDBListener;
 
 
@@ -73,13 +75,13 @@ public class SaleDisplay extends AppCompatActivity  implements SaleAdapter.OnIte
         mStorage = FirebaseStorage.getInstance().getReference();
         //StorageReference pathReference = mStorage.child("Commercial/");
 
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("Sale_houses/ ");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("Sale/");
 
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    SaleData upload = postSnapshot.getValue(SaleData.class);
+                    HolidayData upload = postSnapshot.getValue(HolidayData.class);
                     mUploads.add(upload);
                 }
 
@@ -108,8 +110,8 @@ public class SaleDisplay extends AppCompatActivity  implements SaleAdapter.OnIte
 
     @Override
     public void onDeleteClick(int position) {
-        SaleData selectedItem = mUploads.get(position);
-        final String selectedKey = selectedItem.getsKey();
+        HolidayData selectedItem = mUploads.get(position);
+        final String selectedKey = selectedItem.getKey();
 
         StorageReference imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(selectedItem.getImageURL());
         imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -120,6 +122,5 @@ public class SaleDisplay extends AppCompatActivity  implements SaleAdapter.OnIte
             }
         });
     }
-
 
 }

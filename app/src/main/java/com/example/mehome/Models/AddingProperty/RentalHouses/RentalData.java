@@ -2,10 +2,18 @@ package com.example.mehome.Models.AddingProperty.RentalHouses;
 
 public class RentalData {
 
-    private String Title_of_House, House_Location, HouseDesc, HousePrice;
+    private String Title_of_House, House_Location, HouseDesc, HousePrice, OwnerNumber;
     private String HouseType, Bedroom_No;
     private String imageURL;
     private String rKEy;
+
+    public String getOwnerNumber() {
+        return OwnerNumber;
+    }
+
+    public void setOwnerNumber(String ownerNumber) {
+        OwnerNumber = ownerNumber;
+    }
 
     public String getTitle_of_House() {
         return Title_of_House;

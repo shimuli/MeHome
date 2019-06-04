@@ -1,7 +1,11 @@
 package com.example.mehome.Models.AddingProperty.CommercialSale;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -10,6 +14,7 @@ import android.view.View;
 import android.widget.GridLayout;
 import android.widget.Toast;
 
+import com.example.mehome.Models.AddingProperty.AddProperty;
 import com.example.mehome.Models.AddingProperty.HolidayHouses.HolidayRental;
 import com.example.mehome.Models.AddingProperty.RentalHouses.RentalData;
 import com.example.mehome.R;
@@ -43,52 +48,52 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 
 public class AddCommercial extends AppCompatActivity {
+    private Button selectImage,Uploaddata;
+    private ImageView RentalImage;
     private String Storage_Path = "Commercial/";
     private String Database_path = "Commercial/";
-    private Button SelectImage, UploadData;
-    EditText Title_of_Commercial, Commercial_Location, CommercialDesc, CommercialPrice;
-    private ImageView SelectedImageCom;
-    private Uri CommercialPathUri;
 
-
-    // Creating StorageReference and DatabaseReference object.
-    StorageReference storageReference;
-
-    DatabaseReference databaseReference;
-
-    int Image_Request_code = 1;
-
-    private ProgressDialog progressDialog;
+    private EditText cName, cPrice, cDesc, cLocation,  cnumber;
+    private static final int PICK_IMAGE_REQUEST=1;
+    private DatabaseReference cdataref;
+    private StorageReference cstorageref;
+    final int IMAGE_REQUEST_CODE = 999;
+    private ProgressDialog cprogressDialog;
+    private Uri cimguri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        GridLayout mainGrid;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_commercial);
 
-        storageReference = FirebaseStorage.getInstance().getReference();
 
-        // Assign FirebaseDatabase instance with root database name.
-        databaseReference = FirebaseDatabase.getInstance().getReference(Database_path);
+        selectImage=(Button)findViewById(R.id.ButtonChooseImageHoliday);
 
-        SelectImage = findViewById(R.id.ButtonChooseCommercial);
-        UploadData = findViewById(R.id.ButtonUploadImageCommercial);
-
-        SelectedImageCom =findViewById(R.id.ShowImageCommercial);
-
-        Title_of_Commercial= findViewById(R.id.commercialTitle);
-        Commercial_Location =findViewById(R.id.commercialLocation);
-        CommercialDesc =findViewById(R.id.commercialDescription);
-        CommercialPrice =findViewById(R.id.commercialPrice);
-
-        progressDialog =new ProgressDialog(AddCommercial.this);
+        RentalImage=findViewById(R.id.ShowImageViewHoliday);
+        Uploaddata=findViewById(R.id.ButtonUploadImageHoliday);
+        cName=findViewById(R.id.houseTitleHoliday);
+        cDesc =findViewById(R.id.DescriptionHoliday);
+        cLocation =findViewById(R.id.locationHoliday);
+        cPrice = findViewById(R.id.housePriceHoliday);
+        cnumber =findViewById(R.id.numberHoliday);
 
 
-        SelectImage.setOnClickListener(new View.OnClickListener() {
+        cprogressDialog=new ProgressDialog(AddCommercial.this);
+
+        cstorageref= FirebaseStorage.getInstance().getReference(Storage_Path);
+        cdataref= FirebaseDatabase.getInstance().getReference(Database_path);
+        Uploaddata.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadImage();
+            }
+        });
+
+        selectImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent selectImageIntent = new Intent();
@@ -97,144 +102,87 @@ public class AddCommercial extends AppCompatActivity {
                 selectImageIntent.setType("image/*");
                 selectImageIntent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(selectImageIntent, "Please Select" +
-                        "Image"),Image_Request_code);
+                        "Image"),IMAGE_REQUEST_CODE);
 
+
+                ActivityCompat.requestPermissions(AddCommercial.this,new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+                        IMAGE_REQUEST_CODE);
             }
         });
-
-        SelectedImageCom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent selectImageIntent = new Intent();
-
-                // Setting intent type as image to select image from phone storage.
-                selectImageIntent.setType("image/*");
-                selectImageIntent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(selectImageIntent, "Please Select" +
-                        "Image"),Image_Request_code);
-
-            }
-        });
-
-        UploadData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // Calling method to upload selected data on Firebase storage.
-                UploadImageFileToFirebaseStorage();
-            }
-        });
-
-
 
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode==IMAGE_REQUEST_CODE){
+            if (grantResults.length>0 && grantResults[0]== PackageManager.PERMISSION_GRANTED){
+                Intent intent=new Intent(new Intent(Intent.ACTION_PICK));
+                intent.setType("image/*");
 
-        super.onActivityResult(requestCode,resultCode, data );
+                startActivityForResult(Intent.createChooser(intent,"select image"),IMAGE_REQUEST_CODE);
 
-        if (requestCode == Image_Request_code && resultCode==RESULT_OK && data != null && data.getData()!=null){
-            CommercialPathUri = data.getData();
-
-            try{
-
-                // Getting selected image into Bitmap.
-
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), CommercialPathUri);
-
-                // Setting up bitmap selected image into ImageView.
-                SelectedImageCom.setImageBitmap(bitmap);
-
-                // After selecting image change choose button above text.
-
-                SelectImage.setText("Image Selected");
-
-            }
-            catch (IOException e){
-                e.printStackTrace();
             }
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == IMAGE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            cimguri = data.getData();
+            Picasso.with(this).load(cimguri).into(RentalImage);
+        }
+    }
+    private String getFileExtensoin (Uri uri){
+        ContentResolver contentResolver = getContentResolver();
+        MimeTypeMap map = MimeTypeMap.getSingleton();
+        return map.getExtensionFromMimeType(contentResolver.getType(uri));
 
     }
 
-    // Creating Method to get the selected image file Extension from File Path URI.
-    public String GetFileExtension(Uri uri){
-        ContentResolver contentResolver =getContentResolver();
-        MimeTypeMap mimeTypeMap =MimeTypeMap.getSingleton();
-
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
-
-    // Creating UploadImageFileToFirebaseStorage method to upload image on storage.
-    public void UploadImageFileToFirebaseStorage(){
-        if (CommercialPathUri!=null){
-
-            progressDialog.setTitle("Uploading Data...");
-
-            progressDialog.show();
-
-            //second StorageReference.
-
-            StorageReference storageReference1 = storageReference.child(Storage_Path+System.currentTimeMillis()+"."+GetFileExtension(CommercialPathUri));
-
-            storageReference1.putFile(CommercialPathUri)
+    private void uploadImage() {
+        if (cimguri!=null){
+            StorageReference storageReference=cstorageref.child(System.currentTimeMillis()+"."+ getFileExtensoin(cimguri));
+            storageReference.putFile(cimguri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            String uri = taskSnapshot.toString();
-                            Log.d("TAG", uri);
-                            String CommImageName =  Title_of_Commercial.getText().toString().trim();
-                            String CommArea = Commercial_Location.getText().toString().trim();
-                            String CommCost= CommercialPrice.getText().toString().trim();
-                            String Comm_Desc = CommercialDesc.getText().toString().trim();
+                            Handler handler=new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    cprogressDialog.setProgress(0);
+                                }
+                            },5000);
+                            Toast.makeText(AddCommercial.this,"Upload SuccessFul",Toast.LENGTH_SHORT).show();
+                            CommercialData list_data=new CommercialData(cName.getText().toString().trim(),
+                                    cPrice.getText().toString().trim(),cLocation.getText().toString().trim(),
+                                    cDesc.getText().toString().trim(), cnumber.getText().toString().trim(),taskSnapshot.getDownloadUrl().toString());
 
 
-                            progressDialog.dismiss();
-
-                            Toast.makeText(getApplicationContext(), "Data Uploaded Successfully", Toast.LENGTH_SHORT).show();
-
-                            @SuppressWarnings("VisibleForTest")
-                            CommercialData commercialUploadInfo =new CommercialData(CommImageName,CommArea, Comm_Desc,CommCost, taskSnapshot.getStorage().getDownloadUrl().toString());// getResult().getStorage().getDownloadUrl());
-
-
-                            // Getting image upload ID.
-                            String ImageUploadId = databaseReference.push().getKey();
-
-                            //adding an upload to firebase database
-                            // String uploadId = mDatabase.push().getKey();
-                            // mDatabase.child(uploadId).setValue(upload);
-
-                            // Adding image upload id s child element into databaseReference.
-                            databaseReference.child(ImageUploadId).setValue(commercialUploadInfo);
-
-
+                            String uploadid=cdataref.push().getKey();
+                            cdataref.child(uploadid).setValue(list_data);
+                            startActivity(new Intent(AddCommercial.this, AddProperty.class));
+                            finish();
                         }
-                    })
-                    // If something goes wrong .
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
 
-                            Toast.makeText(AddCommercial.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-
-
-                        }
-                    })
-
-                    // On progress change upload time.
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            progressDialog.setTitle("Data is Uploading...");
-                        }
-                    });
-
-
+                }
+            }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                    double pr=(100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
+                    cprogressDialog.setProgress((int) pr);
+                }
+            });
         }else {
-            Toast.makeText(AddCommercial.this, "Please Select Image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddCommercial.this,"File Not Selected",Toast.LENGTH_SHORT).show();
         }
+
     }
 
 }

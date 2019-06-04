@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity
                 break;
 
             case R.id.nav_my_property:
-                Intent intentMyProperty = new Intent(MainActivity.this, MyProperty.class);
+                Intent intentMyProperty = new Intent(MainActivity.this, AddProperty.class);
                 startActivity(intentMyProperty);
                 break;
 

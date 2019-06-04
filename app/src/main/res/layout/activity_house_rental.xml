@@ -20,39 +20,40 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimaryDark"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:title="Rental Houses"
+            app:title="Holiday Houses"
             android:layout_gravity="center"
             style="bold"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
-
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/ShowImageView"
-        android:src="@drawable/placeholder"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:scaleType="centerInside"/>
 
-    <Button
-        android:id="@+id/ButtonChooseImage"
-        android:text="Select Image"
-        android:padding="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/ShowImageViewHoliday"
+                android:src="@drawable/placeholder"
+                android:layout_width="match_parent"
+                android:layout_height="150dp" />
+
+            <Button
+                android:id="@+id/ButtonChooseImageHoliday"
+                android:text="Select Image"
+                android:padding="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
 
             <EditText
-                android:id="@+id/houseTitle"
+                android:id="@+id/houseTitleHoliday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
@@ -70,49 +71,29 @@
                 android:text="(brand, model, agency,type)"
                 android:gravity="left"/>
 
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/bedRoomHoliday"
+                android:padding="16dp"
+                android:layout_marginTop="10dp"
+                android:text="Number of Bedrooms"
+                android:gravity="left"/>
+
             <EditText
-                android:id="@+id/bedroomSpinner"
+                android:id="@+id/bedroomSpinnerHoliday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:padding="16dp"
                 android:maxLines="1"
-                android:hint="Number of bedrooms"/>
+                android:hint="Number of Bedrooms"/>
 
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/bedRoom"
-                android:padding="16dp"
-                android:textSize="18sp"
-                android:textStyle="italic"
-                android:layout_marginTop="10dp"
-                android:text="(Put 0 if none)"
-                android:gravity="left"/>
-
-            <EditText
-                android:id="@+id/HouseTypeSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:padding="16dp"
-                android:maxLines="1"
-                android:hint="Type of House"/>
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:textSize="18sp"
-                android:textStyle="italic"
-                android:layout_marginTop="10dp"
-                android:text="(Family,Bachelor,Both)"
-                android:gravity="left"/>
 
 
 
             <EditText
-                android:id="@+id/location"
+                android:id="@+id/locationHoliday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
@@ -122,7 +103,7 @@
 
 
             <EditText
-                android:id="@+id/Description"
+                android:id="@+id/DescriptionHoliday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
@@ -139,24 +120,42 @@
                 android:gravity="left"/>
 
             <EditText
-                android:id="@+id/housePrice"
+                android:id="@+id/housePriceHoliday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:maxLines="1"
                 android:hint="Price(Ksh)"/>
 
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="-10dp"
+                android:textSize="18sp"
+                android:textStyle="italic"
+                android:layout_marginTop="10dp"
+                android:text="Property Owner Phone Number"
+                android:gravity="left"/>
+
+            <EditText
+                android:id="@+id/numberHoliday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:maxLines="1"
+                android:hint="Phone Number"/>
+
 
 
             <Button
-               android:id="@+id/ButtonUploadImage"
+                android:id="@+id/ButtonUploadImageHoliday"
                 android:text="Add Property"
                 android:layout_width="match_parent"
                 android:padding="16dp"
                 android:layout_height="wrap_content" />
 
             <ProgressBar
-                android:id="@+id/progressBarAdd"
+                android:id="@+id/progressBarAddHoliday"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center|bottom"
@@ -167,7 +166,6 @@
         </LinearLayout>
 
     </ScrollView>
-
 
 
 </LinearLayout>

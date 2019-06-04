@@ -3,54 +3,58 @@ package com.example.mehome.Models.AddingProperty.CommercialSale;
 import com.google.firebase.database.Exclude;
 
 public class CommercialData {
+    private String Title_of_Holiday_House;
+
     public CommercialData() {
     }
 
-
-    private String Title_of_Commercial, Commercial_Location, CommercialDesc, CommercialPrice;
+    private String Holdiay_House_Location;
+    private String Holiday_HouseDesc;
+    private String Holdiay_HousePrice;
     private String imageURL;
-    private String mKey;
+    private String OwnerNumber;
+    private String Key;
 
-    public CommercialData(String title_of_Commercial, String commercial_Location, String commercialDesc, String commercialPrice, String imageURL) {
-        Title_of_Commercial = title_of_Commercial;
-        Commercial_Location = commercial_Location;
-        CommercialDesc = commercialDesc;
-        CommercialPrice = commercialPrice;
-        this.imageURL = imageURL;
+    public String getOwnerNumber() {
+        return OwnerNumber;
     }
 
-
-    public String getTitle_of_Commercial() {
-        return Title_of_Commercial;
+    public void setOwnerNumber(String ownerNumber) {
+        OwnerNumber = ownerNumber;
     }
 
-    public void setTitle_of_Commercial(String title_of_Commercial) {
-        Title_of_Commercial = title_of_Commercial;
+    public String getTitle_of_Holiday_House() {
+        return Title_of_Holiday_House;
     }
 
-    public String getCommercial_Location() {
-        return Commercial_Location;
+    public void setTitle_of_Holiday_House(String title_of_Holiday_House) {
+        Title_of_Holiday_House = title_of_Holiday_House;
     }
 
-    public void setCommercial_Location(String commercial_Location) {
-        Commercial_Location = commercial_Location;
+    public String getHoldiay_House_Location() {
+        return Holdiay_House_Location;
     }
 
-    public String getCommercialDesc() {
-        return CommercialDesc;
+    public void setHoldiay_House_Location(String holdiay_House_Location) {
+        Holdiay_House_Location = holdiay_House_Location;
     }
 
-    public void setCommercialDesc(String commercialDesc) {
-        CommercialDesc = commercialDesc;
+    public String getHoliday_HouseDesc() {
+        return Holiday_HouseDesc;
     }
 
-    public String getCommercialPrice() {
-        return CommercialPrice;
+    public void setHoliday_HouseDesc(String holiday_HouseDesc) {
+        Holiday_HouseDesc = holiday_HouseDesc;
     }
 
-    public void setCommercialPrice(String commercialPrice) {
-        CommercialPrice = commercialPrice;
+    public String getHoldiay_HousePrice() {
+        return Holdiay_HousePrice;
     }
+
+    public void setHoldiay_HousePrice(String holdiay_HousePrice) {
+        Holdiay_HousePrice = holdiay_HousePrice;
+    }
+
 
     public String getImageURL() {
         return imageURL;
@@ -60,15 +64,24 @@ public class CommercialData {
         this.imageURL = imageURL;
     }
 
-    @Exclude
     public String getKey() {
-        return mKey;
+        return Key;
     }
 
-    @Exclude
-    public void setKey(String key) {
-        mKey = key;
+    public void sethKey(String hKey) {
+        this.Key = hKey;
     }
+
+    public CommercialData(String title_of_Holiday_House,String holdiay_HousePrice,String holdiay_House_Location,String holiday_HouseDesc,String townerNumber, String imageURL) {
+        Title_of_Holiday_House = title_of_Holiday_House;
+        Holdiay_House_Location = holdiay_House_Location;
+        Holiday_HouseDesc = holiday_HouseDesc;
+        Holdiay_HousePrice = holdiay_HousePrice;
+        OwnerNumber = townerNumber;
+        this.imageURL = imageURL;
+
+    }
+
 
 
 }

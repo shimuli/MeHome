@@ -18,12 +18,12 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class CommercialViewHolder extends RecyclerView.Adapter<CommercialViewHolder.ImageViewHolder> {
+public class CommercialAdapter extends RecyclerView.Adapter<CommercialAdapter.ImageViewHolder> {
     private Context mContext;
     private List<CommercialData> mUploads;
     private OnItemClickListener mListener;
 
-    public CommercialViewHolder(Context context, List<CommercialData> uploads) {
+    public CommercialAdapter(Context context, List<CommercialData> uploads) {
         mContext = context;
         mUploads = uploads;
     }
@@ -38,10 +38,11 @@ public class CommercialViewHolder extends RecyclerView.Adapter<CommercialViewHol
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
         CommercialData uploadCurrent = mUploads.get(position);
-        holder.textViewTitle.setText(uploadCurrent.getTitle_of_Commercial());
-        holder.textViewLocation.setText(uploadCurrent.getCommercial_Location());
-        holder.textViewDesc.setText(uploadCurrent.getCommercialDesc());
-        holder.textViewPrice.setText(uploadCurrent.getCommercialPrice());
+        holder.textViewTitle.setText(uploadCurrent.getTitle_of_Holiday_House());
+        holder.textViewLocation.setText(uploadCurrent.getHoldiay_House_Location());
+        holder.textViewDesc.setText(uploadCurrent.getHoliday_HouseDesc());
+        holder.textViewPrice.setText(uploadCurrent.getHoldiay_HousePrice());
+        holder.textViewPhone.setText(uploadCurrent.getOwnerNumber());
         Picasso.with(mContext)
                 .load(uploadCurrent.getImageURL())
                 .fit()
@@ -55,17 +56,19 @@ public class CommercialViewHolder extends RecyclerView.Adapter<CommercialViewHol
     }
 
     public class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
-        public TextView textViewTitle, textViewLocation, textViewDesc, textViewPrice;
+        public TextView textViewTitle, textViewLocation, textViewDesc, textViewPrice, textViewPhone;
         public ImageView imageView;
 
         public ImageViewHolder(View itemView) {
             super(itemView);
 
-            textViewTitle = itemView.findViewById(R.id.text_view_name);
-            textViewLocation = itemView.findViewById(R.id.text_view_location);
-            textViewDesc = itemView.findViewById(R.id.text_view_description);
-            textViewPrice = itemView.findViewById(R.id.text_view_Price);
-            imageView = itemView.findViewById(R.id.image_view_upload);
+            textViewTitle = itemView.findViewById(R.id.text_view_name_comm);
+            textViewLocation = itemView.findViewById(R.id.text_view_location_comm);
+            textViewDesc = itemView.findViewById(R.id.text_view_description_comm);
+            textViewPrice = itemView.findViewById(R.id.text_view_Price_comm);
+            imageView = itemView.findViewById(R.id.image_view_upload_comm);
+            textViewPhone =itemView.findViewById(R.id.text_view_phone_comm);
+
 
             itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);

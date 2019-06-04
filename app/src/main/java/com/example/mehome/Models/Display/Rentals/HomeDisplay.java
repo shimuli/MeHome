@@ -3,6 +3,7 @@ package com.example.mehome.Models.Display.Rentals;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.example.mehome.Models.AddingProperty.HolidayHouses.HolidayData;
 import com.example.mehome.Models.AddingProperty.RentalHouses.RentalData;
 import com.example.mehome.R;
 
@@ -42,7 +43,7 @@ public class HomeDisplay extends AppCompatActivity  implements HomeAdapter.OnIte
 
     private DatabaseReference mDatabaseRef;
     private StorageReference mStorage;
-    private List<RentalData> mUploads;
+    private List<HolidayData> mUploads;
     private ValueEventListener mDBListener;
 
 
@@ -69,13 +70,13 @@ public class HomeDisplay extends AppCompatActivity  implements HomeAdapter.OnIte
         mStorage = FirebaseStorage.getInstance().getReference();
         //StorageReference pathReference = mStorage.child("Commercial/");
 
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("Rental_houses/");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("Rentals/");
 
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    RentalData upload = postSnapshot.getValue(RentalData.class);
+                    HolidayData upload = postSnapshot.getValue(HolidayData.class);
                     mUploads.add(upload);
                 }
 
@@ -104,8 +105,8 @@ public class HomeDisplay extends AppCompatActivity  implements HomeAdapter.OnIte
 
     @Override
     public void onDeleteClick(int position) {
-        RentalData selectedItem = mUploads.get(position);
-        final String selectedKey = selectedItem.getrKEy();
+        HolidayData selectedItem = mUploads.get(position);
+        final String selectedKey = selectedItem.getKey();
 
         StorageReference imageRef = FirebaseStorage.getInstance().getReferenceFromUrl(selectedItem.getImageURL());
         imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {

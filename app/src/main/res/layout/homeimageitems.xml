@@ -10,7 +10,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/text_view_name_home"
+            android:id="@+id/text_view_name_comm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -22,72 +22,195 @@
             android:textSize="20sp" />
 
         <ImageView
-            android:id="@+id/image_view_upload_home"
+            android:id="@+id/image_view_upload_comm"
             android:layout_width="match_parent"
             android:layout_height="200dp" />
 
-
-        <TextView
-            android:id="@+id/text_view_location_home"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:text="Location"
-            android:textStyle="italic"
-            android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Location: "
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
 
+            <TextView
+                android:id="@+id/text_view_location_comm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Location"
+                android:textStyle="italic"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+        </LinearLayout>
 
-
-        <TextView
-            android:id="@+id/text_view_Type_home"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:text="Type"
-            android:textStyle="italic"
-            android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/text_view_Bedrooms_home"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:text="Price"
-            android:textStyle="italic"
-            android:textColor="@android:color/black"
-            android:textSize="20sp" />
-        <TextView
-            android:id="@+id/text_view_description_home"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:text="Desc"
-            android:textStyle="italic"
-            android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Bed Rooms: "
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/text_view_Bedrooms_comm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Bedrooms "
+                android:textStyle="italic"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:text="  Bed Rooms"
+                android:textStyle="italic"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
 
 
-        <TextView
-            android:id="@+id/text_view_Price_home"
-            android:layout_width="wrap_content"
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:text="Price"
-            android:textStyle="italic"
-            android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Description:  "
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/text_view_description_comm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Desc"
+                android:textStyle="italic"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Price:  "
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:text="  Ksh.  "
+                android:textStyle="italic"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/text_view_Price_comm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Price"
+                android:textStyle="italic"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:text="  Per Month "
+                android:textStyle="italic"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Contact:  "
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/text_view_phone_comm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:text="Contact"
+                android:textStyle="italic"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
 
 
 

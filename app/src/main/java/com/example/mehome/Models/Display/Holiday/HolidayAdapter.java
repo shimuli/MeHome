@@ -43,6 +43,7 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ImageVie
         holder.textViewDesc.setText(uploadCurrent.getHoliday_HouseDesc());
         holder.textViewPrice.setText(uploadCurrent.getHoldiay_HousePrice());
         holder.textViewBed.setText(uploadCurrent.getHoliday_Bedroom_No());
+        holder.textViewPhone.setText(uploadCurrent.getOwnerNumber());
         Picasso.with(mContext)
                 .load(uploadCurrent.getImageURL())
                 .fit()
@@ -56,7 +57,7 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ImageVie
     }
 
     public class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
-        public TextView textViewTitle, textViewLocation, textViewDesc, textViewPrice, textViewType, textViewBed;
+        public TextView textViewTitle, textViewLocation, textViewDesc, textViewPrice, textViewType, textViewBed, textViewPhone;
         public ImageView imageView;
 
         public ImageViewHolder(View itemView) {
@@ -68,6 +69,7 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ImageVie
             textViewPrice = itemView.findViewById(R.id.text_view_Price_comm);
             imageView = itemView.findViewById(R.id.image_view_upload_comm);
             textViewBed = itemView.findViewById(R.id.text_view_Bedrooms_comm);
+            textViewPhone =itemView.findViewById(R.id.text_view_phone_comm);
 
 
             itemView.setOnClickListener(this);

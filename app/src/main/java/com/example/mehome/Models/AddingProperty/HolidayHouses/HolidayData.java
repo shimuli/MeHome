@@ -14,8 +14,16 @@ public class HolidayData {
     private String Holdiay_HousePrice;
     private String Holiday_Bedroom_No;
     private String imageURL;
+    private String OwnerNumber;
     private String Key;
 
+    public String getOwnerNumber() {
+        return OwnerNumber;
+    }
+
+    public void setOwnerNumber(String ownerNumber) {
+        OwnerNumber = ownerNumber;
+    }
 
     public String getTitle_of_Holiday_House() {
         return Title_of_Holiday_House;
@@ -73,12 +81,13 @@ public class HolidayData {
         this.Key = hKey;
     }
 
-    public HolidayData(String title_of_Holiday_House,String holdiay_HousePrice,String holdiay_House_Location,String holiday_Bedroom_No,String holiday_HouseDesc, String imageURL) {
+    public HolidayData(String title_of_Holiday_House,String holdiay_HousePrice,String holdiay_House_Location,String holiday_Bedroom_No,String holiday_HouseDesc,String townerNumber, String imageURL) {
         Title_of_Holiday_House = title_of_Holiday_House;
         Holdiay_House_Location = holdiay_House_Location;
         Holiday_HouseDesc = holiday_HouseDesc;
         Holdiay_HousePrice = holdiay_HousePrice;
         Holiday_Bedroom_No = holiday_Bedroom_No;
+        OwnerNumber = townerNumber;
         this.imageURL = imageURL;
 
     }

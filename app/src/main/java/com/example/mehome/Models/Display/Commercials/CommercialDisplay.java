@@ -26,9 +26,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 
-public class CommercialDisplay extends AppCompatActivity  implements CommercialViewHolder.OnItemClickListener {
+public class CommercialDisplay extends AppCompatActivity  implements CommercialAdapter.OnItemClickListener {
     private RecyclerView mRecyclerView;
-    private CommercialViewHolder commercialViewHolder;
+    private CommercialAdapter commercialViewHolder;
 
     private ProgressBar mProgressCircle;
 
@@ -51,7 +51,7 @@ public class CommercialDisplay extends AppCompatActivity  implements CommercialV
 
         mUploads = new ArrayList<>();
 
-        commercialViewHolder = new CommercialViewHolder(CommercialDisplay.this, mUploads);
+        commercialViewHolder = new CommercialAdapter(CommercialDisplay.this, mUploads);
 
         mRecyclerView.setAdapter(commercialViewHolder);
 
@@ -71,7 +71,7 @@ public class CommercialDisplay extends AppCompatActivity  implements CommercialV
                     mUploads.add(upload);
                 }
 
-                commercialViewHolder = new CommercialViewHolder(CommercialDisplay.this, mUploads);
+                commercialViewHolder = new CommercialAdapter(CommercialDisplay.this, mUploads);
 
                 mRecyclerView.setAdapter(commercialViewHolder);
                 mProgressCircle.setVisibility(View.INVISIBLE);
