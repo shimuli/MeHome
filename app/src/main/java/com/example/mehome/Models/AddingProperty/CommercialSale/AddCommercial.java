@@ -188,7 +188,7 @@ public class AddCommercial extends AppCompatActivity {
                             String CommArea = Commercial_Location.getText().toString().trim();
                             String CommCost= CommercialPrice.getText().toString().trim();
                             String Comm_Desc = CommercialDesc.getText().toString().trim();
-                            
+
 
                             progressDialog.dismiss();
 

@@ -18,6 +18,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 import com.example.mehome.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -102,6 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
                    return;
 
                 }
+
                 progressBar.setVisibility(View.VISIBLE);
 
                 //create user
@@ -116,11 +122,23 @@ public class RegisterActivity extends AppCompatActivity {
                                     Toast.makeText(RegisterActivity.this, "Authentication failed." + task.getException(),
                                             Toast.LENGTH_SHORT).show();
                                 }
-                                else {
+                                if (task.isSuccessful()){
                                     startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                                     finish();
                                 }
+
+                                else{
+                                    String user_id = auth.getCurrentUser().getUid();
+                                    DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("User/").child(user_id);
+                                    Map newUser = new HashMap();
+                                    newUser.put("Name", inputName);
+                                    newUser.put("Phone Number", inputPassword);
+                                    current_user_db.setValue(newUser);
                                 }
+
+                            }
+
+
 
                         });
 
