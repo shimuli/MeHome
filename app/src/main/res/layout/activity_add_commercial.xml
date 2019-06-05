@@ -20,7 +20,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimaryDark"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:title="Holiday Houses"
+            app:title="Commercial"
             android:layout_gravity="center"
             style="bold"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
@@ -59,25 +59,36 @@
                 android:textStyle="bold"
                 android:padding="16dp"
                 android:maxLines="1"
-                android:hint="Name or Title"/>
+                android:inputType="textCapWords"
+                android:hint="Commercial Name"/>
+
+
 
             <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:padding="1dp"
-                android:textSize="18sp"
-                android:textStyle="italic"
-                android:layout_marginTop="10dp"
-                android:text="(brand, model, agency,type)"
-                android:gravity="left"/>
-
-            <EditText
-                android:id="@+id/locationHoliday"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:maxLines="1"
-                android:hint="House Location"/>
+                android:text="Location"/>
+
+
+            <Spinner
+                android:id="@+id/CommercialLocation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Type"/>
+
+
+            <Spinner
+                android:id="@+id/CommercialType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown"/>
 
 
 
@@ -86,35 +97,41 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
+                android:inputType="textCapWords"
                 android:hint="Description"/>
 
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:padding="-10dp"
-                android:textSize="18sp"
-                android:textStyle="italic"
-                android:layout_marginTop="10dp"
-                android:text="(Include conditions,features and age)"
-                android:gravity="left"/>
-
-            <EditText
-                android:id="@+id/housePriceHoliday"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:maxLines="1"
-                android:hint="Price(Ksh)"/>
+                android:layout_height="60dp"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:padding="-10dp"
-                android:textSize="18sp"
-                android:textStyle="italic"
-                android:layout_marginTop="10dp"
-                android:text="Property Owner Phone Number"
-                android:gravity="left"/>
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="69dp"
+                    android:layout_gravity="left"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="55dp"
+                    android:text="Ksh.  "
+                    android:padding="16dp"
+                    android:textStyle="italic"
+                    android:textColor="@android:color/black"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/housePriceHoliday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:maxLines="1"
+                    android:inputType="number"
+                    android:hint="Price(Ksh)"/>
+"
+
+            </LinearLayout>
+
+
+
 
             <EditText
                 android:id="@+id/numberHoliday"
@@ -122,6 +139,7 @@
                 android:layout_height="wrap_content"
                 android:padding="16dp"
                 android:maxLines="1"
+                android:inputType="phone"
                 android:hint="Phone Number"/>
 
 
@@ -131,7 +149,8 @@
                 android:text="Add Property"
                 android:layout_width="match_parent"
                 android:padding="16dp"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:enabled="false"/>
 
             <ProgressBar
                 android:id="@+id/progressBarAddHoliday"

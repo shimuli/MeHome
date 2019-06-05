@@ -13,6 +13,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
@@ -36,6 +38,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 
 public class HolidayRental extends AppCompatActivity {
 
@@ -44,11 +47,11 @@ public class HolidayRental extends AppCompatActivity {
     private String Storage_Path = "holiday/";
     private String Database_path = "holiday/";
 
-    private EditText hName, hPrice, hDesc, hLocation, hbedroom, hnumber;
+    private EditText hName, hPrice, hDesc, hbedroom, hnumber;
     private static final int PICK_IMAGE_REQUEST=1;
     private DatabaseReference hdataref;
     private StorageReference hstorageref;
-    Spinner HouseType, Bedroom_No;
+    Spinner HouseType, Bedroom_No, hLocation;
     final int IMAGE_REQUEST_CODE = 999;
     private ProgressDialog hprogressDialog;
     private Uri himguri;
@@ -59,16 +62,43 @@ public class HolidayRental extends AppCompatActivity {
 
 
         setContentView(R.layout.activity_holiday_rental);
-        selectImage=(Button)findViewById(R.id.ButtonChooseImageHoliday);
 
+        selectImage=(Button)findViewById(R.id.ButtonChooseImageHoliday);
         HolidayImage=(ImageView)findViewById(R.id.ShowImageViewHoliday);
         Uploaddata=(Button)findViewById(R.id.ButtonUploadImageHoliday);
         hName=(EditText)findViewById(R.id.houseTitleHoliday);
         hDesc =findViewById(R.id.DescriptionHoliday);
-        hLocation =findViewById(R.id.locationHoliday);
+        hLocation =findViewById(R.id.HolidaylLoc);
         hPrice = findViewById(R.id.housePriceHoliday);
-        hbedroom =findViewById(R.id.bedroomSpinnerHoliday);
+        Bedroom_No = findViewById(R.id.bedroomSpinnerHoliday);
+        HouseType =findViewById(R.id.HolidayType);
+
+
+        Bedroom_No =findViewById(R.id.bedroomSpinnerHoliday);
         hnumber =findViewById(R.id.numberHoliday);
+
+        hPrice.addTextChangedListener(new CurrencyTextWatcher());
+
+        hName.addTextChangedListener(textWatcher);
+        hPrice.addTextChangedListener(textWatcher);
+        hDesc.addTextChangedListener(textWatcher);
+        hnumber.addTextChangedListener(textWatcher);
+
+        Spinner shLocation = findViewById(R.id.HolidaylLoc);
+
+        String[] items = new String[]{"Kakamega Town", "Amalemba", "Lurambi","Kefinco", "Matende"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        shLocation.setAdapter(adapter);
+
+        Spinner shType = findViewById(R.id.HolidayType);
+        String[] items1 = new String[]{"Single Rooms", "Bungalow", "Mansion", "Bed Sitter", "Hostel", "Appartment"};
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items1);
+        shType.setAdapter(adapter1);
+
+        Spinner shBedrooms = findViewById(R.id.bedroomSpinnerHoliday);
+        String[] items3 = new String[]{"1", "2", "3", "4", "5", "6", "7","8","9","None"};
+        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items3);
+        shBedrooms.setAdapter(adapter3);
 
 
         hprogressDialog=new ProgressDialog(HolidayRental.this);
@@ -99,6 +129,30 @@ public class HolidayRental extends AppCompatActivity {
         });
 
     }
+
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            String WName = hName.getText().toString().trim();
+            String Wcost = hPrice.getText().toString().trim();
+            String WDesc = hDesc.getText().toString().trim();
+            String WPhone = hnumber.getText().toString().trim();
+
+            Uploaddata.setEnabled(!WName.isEmpty() && !Wcost.isEmpty() && !WDesc.isEmpty() && !WPhone.isEmpty());
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -137,6 +191,11 @@ public class HolidayRental extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            String CommercialLoc= hLocation.getSelectedItem().toString().trim();
+                            String CommercialTypes= HouseType.getSelectedItem().toString().trim();
+                            String CommercialBR= Bedroom_No.getSelectedItem().toString().trim();
+
                             Handler handler=new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
@@ -146,7 +205,7 @@ public class HolidayRental extends AppCompatActivity {
                             },5000);
                             Toast.makeText(HolidayRental.this,"Upload SuccessFul",Toast.LENGTH_SHORT).show();
                             HolidayData list_data=new HolidayData(hName.getText().toString().trim(),
-                                    hPrice.getText().toString().trim(),hLocation.getText().toString().trim(),hbedroom.getText().toString().trim(),
+                                    hPrice.getText().toString().trim(),CommercialLoc,CommercialBR,CommercialTypes,
                                     hDesc.getText().toString().trim(), hnumber.getText().toString().trim(),taskSnapshot.getDownloadUrl().toString());
 
                             //(String title_of_Holiday_House,String holdiay_HousePrice,String holdiay_House_Location,
@@ -173,5 +232,29 @@ public class HolidayRental extends AppCompatActivity {
         }
 
     }
+}
+
+class CurrencyTextWatcher implements TextWatcher {
+    boolean hPrice;
+    public CurrencyTextWatcher(){
+        hPrice = false;
+    }
+    public synchronized void afterTextChanged(Editable s){
+        if (!hPrice){
+            hPrice = true;
+            String digits = s.toString().replaceAll("\\D", "");
+            NumberFormat numberFormat = NumberFormat.getCurrencyInstance();
+            try{
+                String formatted = numberFormat.format(Double.parseDouble(digits)/100);
+                s.replace(0, s.length(), formatted);
+            } catch (NumberFormatException nfe) {
+                s.clear();
+            }
+            hPrice =false;
+        }
+
+    }
+    public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+    public void onTextChanged(CharSequence s, int start, int before, int count) { }
 }
 

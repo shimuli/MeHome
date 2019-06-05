@@ -122,19 +122,19 @@ public class RegisterActivity extends AppCompatActivity {
                                     Toast.makeText(RegisterActivity.this, "Authentication failed." + task.getException(),
                                             Toast.LENGTH_SHORT).show();
                                 }
-                                if (task.isSuccessful()){
+                                else{
                                     startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                                     finish();
                                 }
 
-                                else{
-                                    String user_id = auth.getCurrentUser().getUid();
-                                    DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("User/").child(user_id);
-                                    Map newUser = new HashMap();
-                                    newUser.put("Name", inputName);
-                                    newUser.put("Phone Number", inputPassword);
-                                    current_user_db.setValue(newUser);
-                                }
+                                //else{
+                                //  String user_id = auth.getCurrentUser().getUid();
+                                // DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("User/").child(user_id);
+                                //  Map newUser = new HashMap();
+                                //  newUser.put("Name", inputName);
+                                //   newUser.put("Phone Number", inputPassword);
+                                //   current_user_db.setValue(newUser);
+                                //}
 
                             }
 

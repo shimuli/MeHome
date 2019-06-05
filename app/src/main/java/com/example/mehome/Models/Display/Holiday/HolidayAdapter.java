@@ -44,6 +44,7 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ImageVie
         holder.textViewPrice.setText(uploadCurrent.getHoldiay_HousePrice());
         holder.textViewBed.setText(uploadCurrent.getHoliday_Bedroom_No());
         holder.textViewPhone.setText(uploadCurrent.getOwnerNumber());
+        holder.textViewType.setText(uploadCurrent.getTypes());
         Picasso.with(mContext)
                 .load(uploadCurrent.getImageURL())
                 .fit()
@@ -70,6 +71,7 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ImageVie
             imageView = itemView.findViewById(R.id.image_view_upload_comm);
             textViewBed = itemView.findViewById(R.id.text_view_Bedrooms_comm);
             textViewPhone =itemView.findViewById(R.id.text_view_phone_comm);
+            textViewType = itemView.findViewById(R.id.text_view_type_comm);
 
 
             itemView.setOnClickListener(this);
@@ -91,10 +93,9 @@ public class HolidayAdapter extends RecyclerView.Adapter<HolidayAdapter.ImageVie
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle("Select Action");
-            MenuItem doWhatever = menu.add(Menu.NONE, 1, 1, "Do whatever");
+
             MenuItem delete = menu.add(Menu.NONE, 2, 2, "Delete");
 
-            doWhatever.setOnMenuItemClickListener(this);
             delete.setOnMenuItemClickListener(this);
         }
 

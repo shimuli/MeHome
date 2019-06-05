@@ -13,6 +13,16 @@ public class CommercialData {
     private String Holdiay_HousePrice;
     private String imageURL;
     private String OwnerNumber;
+    private String Type;
+
+    public String getType() {
+        return Type;
+    }
+
+    public void setType(String type) {
+        Type = type;
+    }
+
     private String Key;
 
     public String getOwnerNumber() {
@@ -72,12 +82,13 @@ public class CommercialData {
         this.Key = hKey;
     }
 
-    public CommercialData(String title_of_Holiday_House,String holdiay_HousePrice,String holdiay_House_Location,String holiday_HouseDesc,String townerNumber, String imageURL) {
+    public CommercialData(String title_of_Holiday_House,String holdiay_HousePrice,String holdiay_House_Location, String type,String holiday_HouseDesc,String townerNumber, String imageURL) {
         Title_of_Holiday_House = title_of_Holiday_House;
         Holdiay_House_Location = holdiay_House_Location;
         Holiday_HouseDesc = holiday_HouseDesc;
         Holdiay_HousePrice = holdiay_HousePrice;
         OwnerNumber = townerNumber;
+        Type = type;
         this.imageURL = imageURL;
 
     }

@@ -39,7 +39,7 @@
             android:textColorHint="@color/colorWhite"
             android:textColor="@color/colorWhite"
             android:drawableLeft="@drawable/ic_email_24dp"
-            android:inputType="text"
+            android:inputType="textEmailAddress"
             android:maxLines="1"
             />
 

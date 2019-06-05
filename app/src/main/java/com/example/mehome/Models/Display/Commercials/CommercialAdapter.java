@@ -43,6 +43,7 @@ public class CommercialAdapter extends RecyclerView.Adapter<CommercialAdapter.Im
         holder.textViewDesc.setText(uploadCurrent.getHoliday_HouseDesc());
         holder.textViewPrice.setText(uploadCurrent.getHoldiay_HousePrice());
         holder.textViewPhone.setText(uploadCurrent.getOwnerNumber());
+        holder.textViewType.setText(uploadCurrent.getType());
         Picasso.with(mContext)
                 .load(uploadCurrent.getImageURL())
                 .fit()
@@ -56,7 +57,7 @@ public class CommercialAdapter extends RecyclerView.Adapter<CommercialAdapter.Im
     }
 
     public class ImageViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
-        public TextView textViewTitle, textViewLocation, textViewDesc, textViewPrice, textViewPhone;
+        public TextView textViewTitle, textViewLocation, textViewDesc, textViewPrice, textViewPhone, textViewType;
         public ImageView imageView;
 
         public ImageViewHolder(View itemView) {
@@ -68,6 +69,7 @@ public class CommercialAdapter extends RecyclerView.Adapter<CommercialAdapter.Im
             textViewPrice = itemView.findViewById(R.id.text_view_Price_comm);
             imageView = itemView.findViewById(R.id.image_view_upload_comm);
             textViewPhone =itemView.findViewById(R.id.text_view_phone_comm);
+            textViewType =itemView.findViewById(R.id.text_view_type_comm);
 
 
             itemView.setOnClickListener(this);
@@ -89,10 +91,9 @@ public class CommercialAdapter extends RecyclerView.Adapter<CommercialAdapter.Im
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
             menu.setHeaderTitle("Select Action");
-            MenuItem doWhatever = menu.add(Menu.NONE, 1, 1, "Do whatever");
+
             MenuItem delete = menu.add(Menu.NONE, 2, 2, "Delete");
 
-            doWhatever.setOnMenuItemClickListener(this);
             delete.setOnMenuItemClickListener(this);
         }
 

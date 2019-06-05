@@ -13,6 +13,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
@@ -37,21 +39,23 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 
 public class SaleHouse extends AppCompatActivity {
 
     private Button selectImage,Uploaddata;
-    private ImageView SaleImage;
-    private String Storage_Path = "Sale/";
-    private String Database_path = "Sale/";
+    private ImageView HolidayImage;
+    private String Storage_Path = "Sales/";
+    private String Database_path = "Sales/";
 
-    private EditText sName, sPrice, sDesc, sLocation, sbedroom, snumber;
+    private EditText hName, hPrice, hDesc, hbedroom, hnumber;
     private static final int PICK_IMAGE_REQUEST=1;
-    private DatabaseReference sdataref;
-    private StorageReference sstorageref;
+    private DatabaseReference hdataref;
+    private StorageReference hstorageref;
+    Spinner HouseType, Bedroom_No, hLocation;
     final int IMAGE_REQUEST_CODE = 999;
-    private ProgressDialog sprogressDialog;
-    private Uri simguri;
+    private ProgressDialog hprogressDialog;
+    private Uri himguri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,21 +63,47 @@ public class SaleHouse extends AppCompatActivity {
 
 
         selectImage=(Button)findViewById(R.id.ButtonChooseImageHoliday);
-
-        SaleImage=(ImageView)findViewById(R.id.ShowImageViewHoliday);
+        HolidayImage=(ImageView)findViewById(R.id.ShowImageViewHoliday);
         Uploaddata=(Button)findViewById(R.id.ButtonUploadImageHoliday);
-        sName=(EditText)findViewById(R.id.houseTitleHoliday);
-        sDesc =findViewById(R.id.DescriptionHoliday);
-        sLocation =findViewById(R.id.locationHoliday);
-        sPrice = findViewById(R.id.housePriceHoliday);
-        sbedroom =findViewById(R.id.bedroomSpinnerHoliday);
-        snumber =findViewById(R.id.numberHoliday);
+        hName=(EditText)findViewById(R.id.houseTitleHoliday);
+        hDesc =findViewById(R.id.DescriptionHoliday);
+        hLocation =findViewById(R.id.HolidaylLoc);
+        hPrice = findViewById(R.id.housePriceHoliday);
+        Bedroom_No = findViewById(R.id.bedroomSpinnerHoliday);
+        HouseType =findViewById(R.id.HolidayType);
 
 
-        sprogressDialog=new ProgressDialog(SaleHouse.this);
+        Bedroom_No =findViewById(R.id.bedroomSpinnerHoliday);
+        hnumber =findViewById(R.id.numberHoliday);
 
-        sstorageref= FirebaseStorage.getInstance().getReference(Storage_Path);
-        sdataref= FirebaseDatabase.getInstance().getReference(Database_path);
+        hPrice.addTextChangedListener(new CurrencyTextWatcher());
+
+        hName.addTextChangedListener(textWatcher);
+        hPrice.addTextChangedListener(textWatcher);
+        hDesc.addTextChangedListener(textWatcher);
+        hnumber.addTextChangedListener(textWatcher);
+
+        Spinner shLocation = findViewById(R.id.HolidaylLoc);
+
+        String[] items = new String[]{"Kakamega Town", "Amalemba", "Lurambi","Kefinco", "Matende"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        shLocation.setAdapter(adapter);
+
+        Spinner shType = findViewById(R.id.HolidayType);
+        String[] items1 = new String[]{"Single Rooms", "Bungalow", "Mansion", "Bed Sitter", "Hostel", "Appartment"};
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items1);
+        shType.setAdapter(adapter1);
+
+        Spinner shBedrooms = findViewById(R.id.bedroomSpinnerHoliday);
+        String[] items3 = new String[]{"1", "2", "3", "4", "5", "6", "7","8","9","None"};
+        ArrayAdapter<String> adapter3 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items3);
+        shBedrooms.setAdapter(adapter3);
+
+
+        hprogressDialog=new ProgressDialog(SaleHouse.this);
+
+        hstorageref= FirebaseStorage.getInstance().getReference(Storage_Path);
+        hdataref= FirebaseDatabase.getInstance().getReference(Database_path);
         Uploaddata.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,12 +123,35 @@ public class SaleHouse extends AppCompatActivity {
                         "Image"),IMAGE_REQUEST_CODE);
 
 
-                ActivityCompat.requestPermissions(SaleHouse.this,
-                        new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},IMAGE_REQUEST_CODE);
+                ActivityCompat.requestPermissions(SaleHouse.this,new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},IMAGE_REQUEST_CODE);
             }
         });
 
     }
+
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            String WName = hName.getText().toString().trim();
+            String Wcost = hPrice.getText().toString().trim();
+            String WDesc = hDesc.getText().toString().trim();
+            String WPhone = hnumber.getText().toString().trim();
+
+            Uploaddata.setEnabled(!WName.isEmpty() && !Wcost.isEmpty() && !WDesc.isEmpty() && !WPhone.isEmpty());
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -119,8 +172,8 @@ public class SaleHouse extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == IMAGE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            simguri = data.getData();
-            Picasso.with(this).load(simguri).into(SaleImage);
+            himguri = data.getData();
+            Picasso.with(this).load(himguri).into(HolidayImage);
         }
     }
     private String getFileExtensoin (Uri uri){
@@ -131,28 +184,33 @@ public class SaleHouse extends AppCompatActivity {
     }
 
     private void uploadImage() {
-        if (simguri!=null){
-            StorageReference storageReference=sstorageref.child(System.currentTimeMillis()+"."+ getFileExtensoin(simguri));
-            storageReference.putFile(simguri)
+        if (himguri!=null){
+            StorageReference storageReference=hstorageref.child(System.currentTimeMillis()+"."+ getFileExtensoin(himguri));
+            storageReference.putFile(himguri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            String CommercialLoc= hLocation.getSelectedItem().toString().trim();
+                            String CommercialTypes= HouseType.getSelectedItem().toString().trim();
+                            String CommercialBR= Bedroom_No.getSelectedItem().toString().trim();
+
                             Handler handler=new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    sprogressDialog.setProgress(0);
+                                    hprogressDialog.setProgress(0);
                                 }
                             },5000);
                             Toast.makeText(SaleHouse.this,"Upload SuccessFul",Toast.LENGTH_SHORT).show();
-                            HolidayData list_data=new HolidayData(sName.getText().toString().trim(),
-                                    sPrice.getText().toString().trim(),sLocation.getText().toString().trim(),sbedroom.getText().toString().trim(),
-                                    sDesc.getText().toString().trim(), snumber.getText().toString().trim(),taskSnapshot.getDownloadUrl().toString());
+                            HolidayData list_data=new HolidayData(hName.getText().toString().trim(),
+                                    hPrice.getText().toString().trim(),CommercialLoc,CommercialBR,CommercialTypes,
+                                    hDesc.getText().toString().trim(), hnumber.getText().toString().trim(),taskSnapshot.getDownloadUrl().toString());
 
                             //(String title_of_Holiday_House,String holdiay_HousePrice,String holdiay_House_Location,
                             //  String holiday_Bedroom_No,String holiday_HouseDesc, String imageURL, String hKey)
-                            String uploadid=sdataref.push().getKey();
-                            sdataref.child(uploadid).setValue(list_data);
+                            String uploadid=hdataref.push().getKey();
+                            hdataref.child(uploadid).setValue(list_data);
                             startActivity(new Intent(SaleHouse.this, AddProperty.class));
                             finish();
                         }
@@ -165,7 +223,7 @@ public class SaleHouse extends AppCompatActivity {
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                     double pr=(100.0*taskSnapshot.getBytesTransferred()/taskSnapshot.getTotalByteCount());
-                    sprogressDialog.setProgress((int) pr);
+                    hprogressDialog.setProgress((int) pr);
                 }
             });
         }else {
@@ -173,4 +231,28 @@ public class SaleHouse extends AppCompatActivity {
         }
 
     }
+}
+
+class CurrencyTextWatcher implements TextWatcher {
+    boolean hPrice;
+    public CurrencyTextWatcher(){
+        hPrice = false;
+    }
+    public synchronized void afterTextChanged(Editable s){
+        if (!hPrice){
+            hPrice = true;
+            String digits = s.toString().replaceAll("\\D", "");
+            NumberFormat numberFormat = NumberFormat.getCurrencyInstance();
+            try{
+                String formatted = numberFormat.format(Double.parseDouble(digits)/100);
+                s.replace(0, s.length(), formatted);
+            } catch (NumberFormatException nfe) {
+                s.clear();
+            }
+            hPrice =false;
+        }
+
+    }
+    public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+    public void onTextChanged(CharSequence s, int start, int before, int count) { }
 }

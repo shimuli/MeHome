@@ -9,6 +9,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.GridLayout;
@@ -51,6 +53,7 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 
 public class AddCommercial extends AppCompatActivity {
     private Button selectImage,Uploaddata;
@@ -58,10 +61,11 @@ public class AddCommercial extends AppCompatActivity {
     private String Storage_Path = "Commercial/";
     private String Database_path = "Commercial/";
 
-    private EditText cName, cPrice, cDesc, cLocation,  cnumber;
+    private EditText cName, cPrice, cDesc, cnumber;
     private static final int PICK_IMAGE_REQUEST=1;
     private DatabaseReference cdataref;
     private StorageReference cstorageref;
+    Spinner cLocation, cType;
     final int IMAGE_REQUEST_CODE = 999;
     private ProgressDialog cprogressDialog;
     private Uri cimguri;
@@ -77,9 +81,30 @@ public class AddCommercial extends AppCompatActivity {
         Uploaddata=findViewById(R.id.ButtonUploadImageHoliday);
         cName=findViewById(R.id.houseTitleHoliday);
         cDesc =findViewById(R.id.DescriptionHoliday);
-        cLocation =findViewById(R.id.locationHoliday);
+        cLocation =findViewById(R.id.CommercialLocation);
+        cType = findViewById(R.id.CommercialType);
         cPrice = findViewById(R.id.housePriceHoliday);
         cnumber =findViewById(R.id.numberHoliday);
+
+        cPrice.addTextChangedListener(new CurrencyTextWatcher());
+
+        cName.addTextChangedListener(textWatcher);
+        cPrice.addTextChangedListener(textWatcher);
+        cDesc.addTextChangedListener(textWatcher);
+        cnumber.addTextChangedListener(textWatcher);
+
+        Spinner scLocation = findViewById(R.id.CommercialLocation);
+
+        String[] items = new String[]{"Kakmega Town", "Amalemba", "Lurambi","Kefinco", "Matende"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        scLocation.setAdapter(adapter);
+
+        Spinner scType = findViewById(R.id.CommercialType);
+        String[] items1 = new String[]{"Offices", "Shops", "Stores", "Hotel", "Multi Purpose"};
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items1);
+        scType.setAdapter(adapter1);
+
+
 
 
         cprogressDialog=new ProgressDialog(AddCommercial.this);
@@ -111,6 +136,29 @@ public class AddCommercial extends AppCompatActivity {
         });
 
     }
+
+    private TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String WName = cName.getText().toString().trim();
+            String Wcost = cPrice.getText().toString().trim();
+            String WDesc = cDesc.getText().toString().trim();
+            String WPhone = cnumber.getText().toString().trim();
+
+            Uploaddata.setEnabled(!WName.isEmpty() && !Wcost.isEmpty() && !WDesc.isEmpty() && !WPhone.isEmpty());
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -149,6 +197,9 @@ public class AddCommercial extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            String CommercialLoc= cLocation.getSelectedItem().toString().trim();
+                            String CommercialTypes= cType.getSelectedItem().toString().trim();
                             Handler handler=new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
@@ -158,7 +209,7 @@ public class AddCommercial extends AppCompatActivity {
                             },5000);
                             Toast.makeText(AddCommercial.this,"Upload SuccessFul",Toast.LENGTH_SHORT).show();
                             CommercialData list_data=new CommercialData(cName.getText().toString().trim(),
-                                    cPrice.getText().toString().trim(),cLocation.getText().toString().trim(),
+                                    cPrice.getText().toString().trim(),CommercialLoc, CommercialTypes,
                                     cDesc.getText().toString().trim(), cnumber.getText().toString().trim(),taskSnapshot.getDownloadUrl().toString());
 
 
@@ -185,4 +236,27 @@ public class AddCommercial extends AppCompatActivity {
 
     }
 
+}
+class CurrencyTextWatcher implements TextWatcher {
+    boolean cPrice;
+    public CurrencyTextWatcher(){
+        cPrice = false;
+    }
+    public synchronized void afterTextChanged(Editable s){
+        if (!cPrice){
+            cPrice = true;
+            String digits = s.toString().replaceAll("\\D", "");
+            NumberFormat numberFormat = NumberFormat.getCurrencyInstance();
+            try{
+                String formatted = numberFormat.format(Double.parseDouble(digits)/100);
+                s.replace(0, s.length(), formatted);
+            } catch (NumberFormatException nfe) {
+                s.clear();
+            }
+            cPrice =false;
+        }
+
+    }
+    public void beforeTextChanged(CharSequence s, int start, int count, int after){}
+    public void onTextChanged(CharSequence s, int start, int before, int count) { }
 }

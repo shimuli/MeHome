@@ -24,7 +24,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/img_name"
-            android:hint="Enter Name"/>
+            android:hint="Enter Name"
+            android:inputType="text"/>
     </LinearLayout>
     <LinearLayout
         android:layout_below="@+id/top_layout"
@@ -41,16 +42,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/img_Desc"
+            android:inputType="text"
             android:hint="Description"/>
-        <EditText
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Location"/>
+
+
+        <Spinner
             android:id="@+id/img_loc"
-            android:hint="Loaction"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/img_price"
+            android:inputType="number"
             android:hint="Price"/>
         <ProgressBar
             android:layout_width="match_parent"
@@ -62,6 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btn_upload"
+            android:enabled="false"
             android:text="uploadimage"
             />
     </LinearLayout>
